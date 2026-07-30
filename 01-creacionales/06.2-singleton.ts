@@ -8,6 +8,7 @@
  * * objeto de configuración.
  */
 
+import { connect } from "asset:///node/undici/api.d.ts";
 import { COLORS } from '../helpers/colors.ts';
 
 class DatabaseConnection {
@@ -19,18 +20,34 @@ class DatabaseConnection {
 
   // Método estático para obtener la instancia única
   public static getInstance(): DatabaseConnection {
-    // Completar: implementar el patrón Singleton
-    throw new Error('Method not implemented.');
+      if (!DatabaseConnection.instance){
+        DatabaseConnection.instance = new DatabaseConnection();                        
+        console.log('\n%cSe establecio una conexión con la DB', COLORS.green);        
+      }
+
+      return DatabaseConnection.instance;
   }
 
   // Método para conectar a la base de datos
   public connect(): void {
-    // Completar: si no está conectado, mostrar mensaje de conexión
+    if (this.connected){      
+      console.log('\n%cYa existe una conexión con la DB', COLORS.orange);      
+    }
+
+    this.connected = true;
+    console.log('\n%cSe establecio una nueva conexión con la DB', COLORS.green);    
   }
 
   // Método para desconectar de la base de datos
   public disconnect(): void {
     // Completar: desconectar y mostrar mensaje de desconexión
+    if (this.connected){
+      console.log('%cSe desconecto la DB correctamente!', COLORS.orange);    
+      this.connected = false;
+      return;
+    }
+
+    console.log('%cNo existe una conexión con la DB Activa!', COLORS.red);
   }
 }
 
@@ -45,6 +62,7 @@ function main() {
   console.log('Son iguales:', db1 === db2); // Debería mostrar true
 
   db1.disconnect(); // Debería cerrar la conexión
+  db2.disconnect();
 
   db2.connect(); // Ahora debería conectar de nuevo, ya que se cerró la anterior
 }

@@ -37,17 +37,31 @@ interface Report {
 class SalesReport implements Report {
   // TODO: implementar el método e imprimir en consola:
   // 'Generando reporte de ventas...'
+  generate(): void {
+    console.log('Generando reporte de %cventas...', COLORS.green);
+  }
 }
 
 class InventoryReport implements Report {
   // TODO: implementar el método e imprimir en consola:
   // 'Generando reporte de inventario...'
+  generate(): void {
+    console.log('Generando reporte de %cinventario...', COLORS.blue);
+  }
+}
+
+class ContableReport implements Report {
+  // TODO: implementar el método e imprimir en consola:
+  // 'Generando reporte de inventario...'
+  generate(): void {
+    console.log('Generando reporte de %ccontable...', COLORS.yellow);
+  }
 }
 
 // 3. Clase Base ReportFactory con el Método Factory
 
 abstract class ReportFactory {
-  abstract createReport(): Report;
+  protected abstract createReport(): Report;
 
   generateReport(): void {
     const report = this.createReport();
@@ -58,34 +72,47 @@ abstract class ReportFactory {
 // 4. Clases Concretas de Fábricas de Reportes
 
 class SalesReportFactory extends ReportFactory {
-  createReport(): Report {
-    throw new Error('Method not implemented.');
+  override createReport(): Report {
+    const report = new SalesReport();
+    return report;
   }
 }
 
 class InventoryReportFactory extends ReportFactory {
-  createReport(): Report {
-    throw new Error('Method not implemented.');
+  override createReport(): Report {
+    const report = new InventoryReport();
+    return report;
   }
 }
 
+class ContableReportFactory extends ReportFactory {
+  override createReport(): Report {
+    const report = new ContableReport();
+    return report;
+  }
+}
 // 5. Código Cliente para Probar
 
 function main() {
   let reportFactory: ReportFactory;
 
-  const reportType = prompt(
-    '¿Qué tipo de reporte deseas? %c(sales/inventory)',
-    COLORS.red
-  );
+  const reportType = prompt('Qué tipo de reporte deseas? (ventas/inventario/contable): ');
 
-  if (reportType === 'sales') {
-    reportFactory = new SalesReportFactory();
-  } else {
-    reportFactory = new InventoryReportFactory();
+  switch (reportType) {
+    case 'ventas':
+      reportFactory = new SalesReportFactory();
+      break;
+    case 'inventario':
+      reportFactory = new InventoryReportFactory();
+      break;
+    case 'contable':
+      reportFactory = new ContableReportFactory();
+      break;
+    default:
+      throw new Error('Tipo de reporte inválido. Por favor, elige "ventas", "inventario" o "contable".');
   }
 
-  reportFactory.generateReport();
+  reportFactory.generateReport();  
 }
 
 main();
