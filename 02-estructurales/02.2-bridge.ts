@@ -37,6 +37,12 @@ class PushNotificationChannel implements NotificationChannel {
   }
 }
 
+class WhatsAppNotificationChannel implements NotificationChannel {
+  send(message: string): void {
+    console.log(`Enviando WhastsApp: ${message}`);
+  }
+}
+
 // 3. Clase Abstracta Notification
 // Define la propiedad `channel` y el método `notify`
 
@@ -44,46 +50,68 @@ abstract class Notification {
   // TODO: Definir la propiedad `channel` de tipo NotificationChannel
   // TODO: Definir el constructor de la clase
   // TODO: Definir el método `notify` y `setChannel` (abstractos)
+  protected channel: NotificationChannel;
+
+  constructor(channel: NotificationChannel){
+    this.channel = channel;
+  }
+
+  abstract setChannel(channel: NotificationChannel): void;
+  abstract notify(message: string): void;
+
 }
 
 // 4. Clases Concretas de Notificaciones
 
 class AlertNotification extends Notification {
-  notify(message: string): void {
+  
+  override notify(message: string): void {
     console.log('\n%cNotificación de Alerta:', COLORS.red);
     // TODO: Enviar el mensaje a través del canal
-    throw new Error('Method not implemented.');
+    this.channel.send(message);
   }
 
-  setChannel(channel: NotificationChannel): void {
-    // TODO: Asignar el canal a la propiedad `channel`
-    throw new Error('Method not implemented.');
+  override setChannel(channel: NotificationChannel): void {
+    // TODO: Asignar el canal a la propiedad `channel`    
+    this.channel = channel;
   }
 }
 
 class ReminderNotification extends Notification {
-  notify(message: string): void {
-    console.log('\n%cNotificación de Recordatorio:', COLORS.blue);
+  
+  override notify(message: string): void {
+    console.log('\n%cNotificación de Recordatorio:', COLORS.yellow);
     // TODO: Enviar el mensaje a través del canal
-    throw new Error('Method not implemented.');
+    this.channel.send(message);
   }
 
-  setChannel(channel: NotificationChannel): void {
+  override setChannel(channel: NotificationChannel): void {
     // TODO: Asignar el canal a la propiedad `channel`
-    throw new Error('Method not implemented.');
+    this.channel = channel;
   }
 }
 
 class PushNotification extends Notification {
   override notify(message: string): void {
-    console.log('\n%cNotificación de Push:', COLORS.green);
+    console.log('\n%cNotificación de Push:', COLORS.blue);
     // TODO: Enviar el mensaje a través del canal
-    throw new Error('Method not implemented.');
+    this.channel.send(message);
   }
 
   override setChannel(channel: NotificationChannel): void {
     // TODO: Asignar el canal a la propiedad `channel`
-    throw new Error('Method not implemented.');
+    this.channel = channel;
+  }
+}
+
+class WhatsAppNotification extends Notification {
+  
+  override notify(message: string): void {
+    console.log('\n%cNotificación de WhatsApp:', COLORS.green);
+    this.channel.send(message);
+  }
+  override setChannel(channel: NotificationChannel): void {
+    this.channel = channel;
   }
 }
 
@@ -116,6 +144,9 @@ function main() {
   // Crear una notificación de push usando el canal de notificación push
   const push = new PushNotification(new PushNotificationChannel());
   push.notify('Nueva actualización disponible. Haz clic para instalar.');
+
+  const whatsApp = new WhatsAppNotification(new WhatsAppNotificationChannel());
+  whatsApp.notify('Su codigo de validación es 5292, recuerde no compartir este código.');
 }
 
 main();

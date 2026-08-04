@@ -34,14 +34,23 @@ class ConfidentialDocument implements Document {
 // 3. Clase Proxy - DocumentProxy
 class DocumentProxy implements Document {
   private document: ConfidentialDocument;
-
+  private mustHaveRoles: string[] = ['admin']; // Roles permitidos para acceder al documento
   // TODO: Implementar el constructor de la clase DocumentProxy
+  constructor(document: ConfidentialDocument) {
+    this.document = document;
+  }
 
   displayContent(user: User): void {
     // TODO: Implementar la lógica para verificar si el usuario tiene permisos
     // Sólo si es admin puede ver el contenido
     // Caso contrario, mostrar un mensaje de acceso denegado:
     // EJ: `%cAcceso denegado. ${user.getName()}, no tienes permisos suficientes para ver este documento.`,
+    if (this.mustHaveRoles.includes(user.getRole())) {
+      console.log(`%cAcceso concedido. ${user.getName()}, tienes permisos suficientes para ver este documento.`, COLORS.green);
+      this.document.displayContent();
+      return;
+    }
+    console.log(`%cAcceso denegado. ${user.getName()}, no tienes permisos suficientes para ver este documento.`, COLORS.red);
   }
 }
 
