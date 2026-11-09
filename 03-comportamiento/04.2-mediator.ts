@@ -36,12 +36,15 @@ class ControlTower {
   private airplanes: Airplane[] = [];
 
   // Registrar un avión en la torre de control
-  // TODO: Implementar el método registerAirplane
-  // registerAirplane(airplane: Airplane)
+  registerAirplane(airplane: Airplane){
+    this.airplanes.push(airplane);
+  }
 
   // Enviar un mensaje de un avión a todos los demás
-  //TODO: Implementar el método sendMessage
-  // sendMessage(sender: Airplane, message: string): void
+  sendMessage(sender: Airplane, message: string): void{
+    const airplanesSend = this.airplanes.filter(a => a !== sender);
+    airplanesSend.forEach(a => a.receiveMessage(sender, message));
+  }
 
   // Coordinación de aterrizaje
   requestLanding(sender: Airplane): void {
@@ -75,7 +78,8 @@ class Airplane {
     this.id = id;
     this.controlTower = controlTower;
 
-    // TODO: Registrar el avión en la torre de control
+    // Registrar el avión en la torre de control
+    controlTower.registerAirplane(this);
   }
 
   getId(): string {
@@ -84,16 +88,14 @@ class Airplane {
 
   // Solicitar aterrizaje a la torre de control
   requestLanding(): void {
-    console.log(`${this.id} solicita permiso para aterrizar.`);
-
-    // TODO: Solicitar aterrizaje a la torre de control
+    console.log(`\n${this.id} solicita permiso para aterrizar.`);
+    this.controlTower.requestLanding(this);
   }
 
   // Solicitar despegue a la torre de control
   requestTakeoff(): void {
-    console.log(`${this.id} solicita permiso para despegar.`);
-
-    // TODO: Solicitar despegue a la torre de control
+    console.log(`\n${this.id} solicita permiso para despegar.`);
+    this.controlTower.requestTakeoff(this);
   }
 
   // Recibir mensaje de otros aviones
@@ -118,6 +120,8 @@ function main(): void {
   airplane1.requestLanding();
   airplane2.requestTakeoff();
   airplane3.requestLanding();
+
+  console.log('\n--- Simulación de comunicación entre aviones ---');
 }
 
 main();

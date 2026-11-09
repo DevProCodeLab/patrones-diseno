@@ -46,7 +46,12 @@ class Supervisor extends BaseApprover {
   // TODO: Implementar el método approveRequest si el monto es menor o igual a 1000
   // TODO: Si el monto es mayor a 1000, pasar la solicitud al siguiente aprobador
   override approveRequest(amount: number): void {
-    throw new Error('Method not implemented.');
+    if (amount <= 1000) {
+      console.log(`Supervisor aprueba la solicitud de compra de $${amount}.`);
+      return;
+    }
+    console.log(`Supervisor no puede aprobar la solicitud de compra de $${amount}, pasando al siguiente nivel.`);
+    super.next(amount);
   }
 }
 
@@ -55,12 +60,23 @@ class Manager extends BaseApprover {
   // TODO: Si el monto es mayor a 5000, pasar la solicitud al siguiente aprobador
 
   override approveRequest(amount: number): void {
-    throw new Error('Method not implemented.');
+    if (amount <= 5000) {
+      console.log(`Manager aprueba la solicitud de compra de $${amount}.`);
+      return;
+    }
+    console.log(`Manager no puede aprobar la solicitud de compra de $${amount}, pasando al siguiente nivel.`);
+    super.next(amount);
   }
 }
 
 class Director extends BaseApprover {
-  // TODO: Implementar el método approveRequest si el monto
+  // TODO: Implementar el método approveRequest si el monto es mayor a 5000
+  override approveRequest(amount: number): void {
+    if (amount > 5000) {
+      console.log(`Director aprueba la solicitud de compra de $${amount}.`);
+      return;
+    }    
+  }
 }
 
 // 4. Código Cliente para probar la cadena de responsabilidad
